@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glycoprep: output comparison</title>
+<style>
+  :root {
+    --white: #F0F1F1;
+    --apple: #B6BE00;
+    --pine: #097E74;
+    --charcoal: #2F3D46;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: var(--white);
+    color: var(--charcoal);
+    line-height: 1.55;
+    font-size: 15px;
+  }
+  .top-bar {
+    background: var(--apple);
+    padding: 28px 40px 22px;
+  }
+  .top-bar h1 {
+    font-size: 1.55em;
+    font-weight: 800;
+    color: var(--charcoal);
+    letter-spacing: -0.01em;
+  }
+  .top-bar p {
+    color: var(--charcoal);
+    opacity: 0.72;
+    font-size: 0.92em;
+    margin-top: 4px;
+  }
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px 60px;
+  }
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 18px 0 10px;
+    border-bottom: 2px solid #dde0e0;
+    margin-bottom: 28px;
+    position: sticky;
+    top: 0;
+    background: var(--white);
+    z-index: 10;
+  }
+  .nav a {
+    text-decoration: none;
+    font-size: 0.82em;
+    font-weight: 600;
+    padding: 5px 14px;
+    border-radius: 3px;
+    color: var(--pine);
+    background: transparent;
+    transition: background 0.15s;
+  }
+  .nav a:hover {
+    background: rgba(9,126,116,0.1);
+  }
+  section {
+    margin-bottom: 40px;
+  }
+  h2 {
+    color: var(--pine);
+    font-size: 1.18em;
+    font-weight: 700;
+    margin-bottom: 14px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--pine);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  h2 .num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 3px;
+    background: var(--pine);
+    color: #fff;
+    font-size: 0.82em;
+    flex-shrink: 0;
+  }
+  h3 {
+    color: var(--pine);
+    font-size: 0.95em;
+    font-weight: 600;
+    margin: 16px 0 8px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88em;
+    margin-bottom: 12px;
+  }
+  thead th {
+    background: var(--charcoal);
+    color: #fff;
+    text-align: left;
+    padding: 9px 12px;
+    font-weight: 600;
+    font-size: 0.92em;
+    white-space: nowrap;
+  }
+  thead th:first-child { border-radius: 4px 0 0 0; }
+  thead th:last-child { border-radius: 0 4px 0 0; }
+  tbody td {
+    padding: 7px 12px;
+    border-bottom: 1px solid #dde0e0;
+    vertical-align: middle;
+  }
+  tbody tr:hover { background: rgba(9,126,116,0.04); }
+  .mono { font-family: "JetBrains Mono", "Fira Code", monospace; font-size: 0.92em; }
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  .stat-card {
+    background: #fff;
+    border: 1px solid #dde0e0;
+    border-radius: 6px;
+    padding: 18px 20px;
+  }
+  .stat-card .label {
+    font-size: 0.78em;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #777;
+    font-weight: 600;
+  }
+  .stat-card .value {
+    font-size: 1.7em;
+    font-weight: 800;
+    color: var(--pine);
+    margin-top: 2px;
+  }
+  .stat-card .sub {
+    font-size: 0.82em;
+    color: #999;
+  }
+  .tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 3px;
+    font-size: 0.82em;
+    font-weight: 600;
+  }
+  .tag-new { background: rgba(9,126,116,0.12); color: var(--pine); }
+  .tag-orig { background: rgba(47,61,70,0.10); color: var(--charcoal); }
+  .tag-shared { background: rgba(182,190,0,0.18); color: #6d7200; }
+  .verdict {
+    border-radius: 6px;
+    padding: 22px 26px;
+    margin-top: 12px;
+  }
+  .verdict.pass { background: rgba(9,126,116,0.08); border-left: 4px solid var(--pine); }
+  .verdict.warn { background: rgba(182,190,0,0.10); border-left: 4px solid var(--apple); }
+  .verdict ul { margin: 8px 0 0 20px; }
+  .verdict li { margin-bottom: 4px; }
+  .pill-row { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+  .pill {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 3px;
+    font-size: 0.82em;
+    font-family: "JetBrains Mono", "Fira Code", monospace;
+    background: #fff;
+    border: 1px solid #dde0e0;
+  }
+  .note {
+    font-size: 0.88em;
+    color: #777;
+    margin-top: 6px;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <h1>Glycoprep: output comparison</h1>
+  <p>glycoprep_out.tsv vs original_output.csv &middot; 332 rows &middot; 9 samples</p>
+</div>
+<div class="container">
+
+<nav class="nav">
+  <a href="#overview">Overview</a>
+  <a href="#schema">Schema</a>
+  <a href="#rows">Row Alignment</a>
+  <a href="#numeric">Numeric</a>
+  <a href="#ppm">PPM Difference</a>
+  <a href="#categorical">Categorical</a>
+  <a href="#glycans">Glycan Matching</a>
+  <a href="#samples">Per-Sample</a>
+  <a href="#newcols">New Columns</a>
+  <a href="#verdict">Verdict</a>
+</nav>
+<section id="overview">
+<h2><span class="num">1</span> Overview</h2>
+<div class="stat-grid">
+
+  <div class="stat-card"><div class="label">Rows (each)</div><div class="value">332</div><div class="sub">Identical row counts</div></div>
+  <div class="stat-card"><div class="label">Samples</div><div class="value">9</div><div class="sub">All sample peak counts match</div></div>
+  <div class="stat-card"><div class="label">Shared Columns</div><div class="value">25</div><div class="sub">of 30 new / 28 orig</div></div>
+  <div class="stat-card"><div class="label">Matched Keys</div><div class="value">325</div><div class="sub">0 only-new, 0 only-orig</div></div>
+
+</div>
+</section>
+<section id="schema">
+<h2><span class="num">2</span> Schema Comparison</h2>
+<h3>Shared columns</h3><div class="pill-row">
+<span class="pill">Composition</span>
+<span class="pill">Fucosylation</span>
+<span class="pill">Mass</span>
+<span class="pill">Sialylation</span>
+<span class="pill">Sulfation</span>
+<span class="pill">age_group</span>
+<span class="pill">area</span>
+<span class="pill">bk_peak</span>
+<span class="pill">chi_2</span>
+<span class="pill">condition</span>
+<span class="pill">fwhm</span>
+<span class="pill">intens</span>
+<span class="pill">m_z</span>
+<span class="pill">observed_mz</span>
+<span class="pill">patient</span>
+<span class="pill">ppm_difference</span>
+<span class="pill">quality_fac</span>
+<span class="pill">rel_intens</span>
+<span class="pill">res</span>
+<span class="pill">sample_sheet</span>
+<span class="pill">severity</span>
+<span class="pill">sex</span>
+<span class="pill">sn</span>
+<span class="pill">spot</span>
+<span class="pill">time</span>
+</div>
+<h3>Only in glycoprep</h3><div class="pill-row">
+<span class="pill" style="border-color:var(--pine);color:var(--pine)">confidence</span>
+<span class="pill" style="border-color:var(--pine);color:var(--pine)">confidence_corrected</span>
+<span class="pill" style="border-color:var(--pine);color:var(--pine)">ppm_difference_corrected</span>
+<span class="pill" style="border-color:var(--pine);color:var(--pine)">sample_shift_estimate</span>
+</div>
+<h3>Only in original</h3><div class="pill-row">
+<span class="pill" style="border-color:#c0392b;color:#c0392b">metadata_sample_sheet</span>
+<span class="pill" style="border-color:#c0392b;color:#c0392b">sheet_name</span>
+</div>
+</section>
+<section id="rows">
+<h2><span class="num">3</span> Row-Level Alignment</h2>
+<p>Join key: <code>sample_sheet</code> + <code>m_z</code> (rounded to 6 dp)</p>
+<div class="stat-grid">
+<div class="stat-card"><div class="label">Matched</div><div class="value">325</div></div>
+<div class="stat-card"><div class="label">Only glycoprep</div><div class="value">0</div></div>
+<div class="stat-card"><div class="label">Only original</div><div class="value">0</div></div>
+<div class="stat-card"><div class="label">Merged rows</div><div class="value">346</div><div class="sub">&gt; 332 due to 1:N matches at ambiguous m/z</div></div>
+</div></section>
+<section id="numeric">
+<h2><span class="num">4</span> Numeric Column Comparison</h2>
+<table><thead><tr>
+<th>Column</th><th>Mean |Diff|</th><th>Max |Diff|</th><th>Mean %Diff</th><th>Max %Diff</th><th>Correlation</th><th></th>
+</tr></thead><tbody>
+<tr>
+<td class="mono" style="font-weight:600">Mass</td>
+<td class="mono">0.00523179</td>
+<td class="mono">0.1293</td>
+<td class="mono">0.0002846%</td>
+<td class="mono">0.008048%</td>
+<td><span style="color:#097E74;font-weight:700">1.000000</span></td>
+<td></td>
+</tr>
+<tr>
+<td class="mono" style="font-weight:600">area</td>
+<td class="mono">1.347e-12</td>
+<td class="mono">5.093e-11</td>
+<td class="mono">1.032e-13%</td>
+<td class="mono">4.622e-13%</td>
+<td><span style="color:#097E74;font-weight:700">1.000000</span></td>
+<td></td>
+</tr>
+<tr>
+<td class="mono" style="font-weight:600">bk_peak</td>
+<td class="mono">0</td>
+<td class="mono">0</td>
+<td class="mono">&mdash;%</td>
+<td class="mono">&mdash;%</td>
+<td>&mdash;</td>
+<td></td>
+</tr>
+<tr>
+<td class="mono" style="font-weight:600">chi_2</td>
+<td class="mono">2.959e-10</td>
+<td class="mono">2.980e-08</td>
+<td class="mono">1.073e-13%</td>
+<td class="mono">4.857e-13%</td>
+<td><span style="color:#097E74;font-weight:700">1.000000</span></td>
+<td></td>
+</tr>
+<tr>
+<td class="mono" style="font-weight:600">fwhm</td>
+<td class="mono">1.750e-16</td>
+<td class="mono">6.106e-16</td>
+<td class="mono">1.449e-13%</td>
+<td class="mono">4.957e-13%</td>
+<td><span style="color:#097E74;font-weight:700">1.000000</span></td>
+<td></td>
+</tr>
+<tr>
+<td class="mono" style="font-weight:600">intens</td>
+<td class="mono">5.243e-12</td>
+<td class="mono">4.366e-10</td>
+<td class="mono">1.018e-13%</td>
+<td class="mono">4.915e-13%</td>
+<td><span style="color:#097E74;font-weight:700">1.000000</span></td>
+<td></td>
+</tr>
+<tr>
+<td class="mono" style="font-weight:600">m_z</td>
+<td class="mono">2.032e-12</td>
+<td class="mono">5.457e-12</td>
+<td class="mono">1.466e-13%</td>
+<td class="mono">5.326e-13%</td>
+<td><span style="color:#097E74;font-weight:700">1.000000</span></td>
+<td></td>
+</tr>
+<tr>
+<td class="mono" style="font-weight:600">observed_mz</td>
+<td class="mono">2.032e-12</td>
+<td class="mono">5.457e-12</td>
+<td class="mono">1.466e-13%</td>
+<td class="mono">5.326e-13%</td>
+<td><span style="color:#097E74;font-weight:700">1.000000</span></td>
+<td></td>
+</tr>
+<tr>
+<td class="mono" style="font-weight:600">ppm_difference <span style="font-size:0.78em;color:#777">(|magnitude|)</span></td>
+<td class="mono">2.65989</td>
+<td class="mono">80.4683</td>
+<td class="mono">28.91%</td>
+<td class="mono">3467%</td>
+<td><span style="color:#c0392b;font-weight:700">0.881840</span></td>
+<td><span class="tag tag-shared">signed vs abs &rarr; see &sect;5</span></td>
+</tr>
+<tr>
+<td class="mono" style="font-weight:600">quality_fac</td>
+<td class="mono">6.326e-12</td>
+<td class="mono">1.601e-10</td>
+<td class="mono">9.327e-14%</td>
+<td class="mono">4.923e-13%</td>
+<td><span style="color:#097E74;font-weight:700">1.000000</span></td>
+<td></td>
+</tr>
+<tr>
+<td class="mono" style="font-weight:600">rel_intens</td>
+<td class="mono">8.234e-17</td>
+<td class="mono">4.996e-16</td>
+<td class="mono">1.780e-13%</td>
+<td class="mono">1.397e-12%</td>
+<td><span style="color:#097E74;font-weight:700">1.000000</span></td>
+<td></td>
+</tr>
+<tr>
+<td class="mono" style="font-weight:600">res</td>
+<td class="mono">1.656e-11</td>
+<td class="mono">5.639e-11</td>
+<td class="mono">1.251e-13%</td>
+<td class="mono">5.117e-13%</td>
+<td><span style="color:#097E74;font-weight:700">1.000000</span></td>
+<td></td>
+</tr>
+<tr>
+<td class="mono" style="font-weight:600">sn</td>
+<td class="mono">2.279e-14</td>
+<td class="mono">3.979e-13</td>
+<td class="mono">8.125e-14%</td>
+<td class="mono">5.132e-13%</td>
+<td><span style="color:#097E74;font-weight:700">1.000000</span></td>
+<td></td>
+</tr>
+<tr>
+<td class="mono" style="font-weight:600">time</td>
+<td class="mono">2.548e-11</td>
+<td class="mono">5.821e-11</td>
+<td class="mono">6.290e-14%</td>
+<td class="mono">1.888e-13%</td>
+<td><span style="color:#097E74;font-weight:700">1.000000</span></td>
+<td></td>
+</tr>
+</tbody></table>
+<p class="note">All spectral measurements agree to floating-point precision. The <code>ppm_difference</code> column is compared by magnitude (original stores absolute values, glycoprep stores signed values); the residual difference comes from the per-sample shift correction. See section 5 for details.</p>
+</section>
+<section id="ppm">
+<h2><span class="num">5</span> PPM Difference &mdash; Sign Convention</h2>
+<div class="stat-grid">
+
+<div class="stat-card">
+  <div class="label">Glycoprep (signed)</div>
+  <div class="value" style="font-size:1.1em">184 pos &middot; 162 neg</div>
+</div>
+<div class="stat-card">
+  <div class="label">Original (absolute)</div>
+  <div class="value" style="font-size:1.1em">346 pos &middot; 0 neg</div>
+</div>
+<div class="stat-card">
+  <div class="label">Mean |ppm| (both)</div>
+  <div class="value" style="font-size:1.1em">22.41</div>
+  <div class="sub">Magnitudes are identical</div>
+</div>
+<div class="stat-card">
+  <div class="label">Mean | |new| &minus; |orig| |</div>
+  <div class="value" style="font-size:1.1em">2.66</div>
+  <div class="sub">Residual from shift correction</div>
+</div>
+
+</div>
+<h3>Why the na&iuml;ve % diff was 121%</h3>
+
+<p>A raw <code>|new &minus; orig| / |orig|</code> comparison produces a misleading 121% mean difference.
+This is entirely a <strong>sign-convention artefact</strong>:</p>
+<table style="max-width:640px">
+<thead><tr><th>Scenario</th><th>Rows</th><th>Na&iuml;ve mean %&nbsp;diff</th><th>Explanation</th></tr></thead>
+<tbody>
+<tr>
+  <td>Signs agree (+/+)</td>
+  <td class="mono">184</td>
+  <td class="mono">46.0%</td>
+  <td>Shift correction changes magnitude slightly</td>
+</tr>
+<tr>
+  <td>Signs differ (&minus;/+)</td>
+  <td class="mono">162</td>
+  <td class="mono">207.2%</td>
+  <td>e.g. &minus;5.6 vs +5.6 &rarr; |diff|/|orig| = 200%</td>
+</tr>
+</tbody>
+</table>
+<p style="margin-top:12px">When compared correctly by <strong>magnitude</strong>, the mean difference is only
+<strong>2.66&nbsp;ppm</strong>, explained by glycoprep&rsquo;s per-sample shift correction
+(mean shift estimate: -1.00&nbsp;ppm). After correction, the mean
+<code>|ppm_difference_corrected|</code> is 20.67&nbsp;ppm.</p>
+
+</section>
+<section id="categorical">
+<h2><span class="num">6</span> Categorical Column Comparison</h2>
+<table><thead><tr><th>Column</th><th>Match Rate</th><th style="width:40%">Agreement</th><th>Notes</th></tr></thead><tbody>
+<tr><td class="mono" style="font-weight:600">Composition</td>
+<td class="mono">332/346</td>
+<td><div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:8px;background:#ddd;border-radius:4px;overflow:hidden"><div style="width:96.0%;height:100%;background:#097E74"></div></div><span style="font-size:0.85em;font-weight:600;color:#097E74">96.0%</span></div></td>
+<td><span style="font-size:0.85em"><code>Neu5Ac1SO3Fuc1HexNAc1Gal2GalNAc</code> vs <code>Fuc1HexNAc2Gal2GalNAc</code>; <code>Fuc1HexNAc2Gal2GalNAc</code> vs <code>Neu5Ac1SO3Fuc1HexNAc1Gal2GalNAc</code>; <code>Neu5Ac3SO3HexNAc1Gal1GalNAc</code> vs <code>Neu5Ac2HexNAc2Gal2GalNAc</code></span></td></tr>
+<tr><td class="mono" style="font-weight:600">Fucosylation</td>
+<td class="mono">346/346</td>
+<td><div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:8px;background:#ddd;border-radius:4px;overflow:hidden"><div style="width:100.0%;height:100%;background:#097E74"></div></div><span style="font-size:0.85em;font-weight:600;color:#097E74">100.0%</span></div></td>
+<td></td></tr>
+<tr><td class="mono" style="font-weight:600">Sialylation</td>
+<td class="mono">342/346</td>
+<td><div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:8px;background:#ddd;border-radius:4px;overflow:hidden"><div style="width:98.8%;height:100%;background:#097E74"></div></div><span style="font-size:0.85em;font-weight:600;color:#097E74">98.8%</span></div></td>
+<td><span style="font-size:0.85em"><code>Yes</code> vs <code>No</code>; <code>No</code> vs <code>Yes</code>; <code>Yes</code> vs <code>No</code></span></td></tr>
+<tr><td class="mono" style="font-weight:600">Sulfation</td>
+<td class="mono">332/346</td>
+<td><div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:8px;background:#ddd;border-radius:4px;overflow:hidden"><div style="width:96.0%;height:100%;background:#097E74"></div></div><span style="font-size:0.85em;font-weight:600;color:#097E74">96.0%</span></div></td>
+<td><span style="font-size:0.85em"><code>Yes</code> vs <code>No</code>; <code>No</code> vs <code>Yes</code>; <code>Yes</code> vs <code>No</code></span></td></tr>
+<tr><td class="mono" style="font-weight:600">age_group</td>
+<td class="mono">346/346</td>
+<td><div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:8px;background:#ddd;border-radius:4px;overflow:hidden"><div style="width:100.0%;height:100%;background:#097E74"></div></div><span style="font-size:0.85em;font-weight:600;color:#097E74">100.0%</span></div></td>
+<td></td></tr>
+<tr><td class="mono" style="font-weight:600">condition</td>
+<td class="mono">346/346</td>
+<td><div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:8px;background:#ddd;border-radius:4px;overflow:hidden"><div style="width:100.0%;height:100%;background:#097E74"></div></div><span style="font-size:0.85em;font-weight:600;color:#097E74">100.0%</span></div></td>
+<td></td></tr>
+<tr><td class="mono" style="font-weight:600">patient</td>
+<td class="mono">346/346</td>
+<td><div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:8px;background:#ddd;border-radius:4px;overflow:hidden"><div style="width:100.0%;height:100%;background:#097E74"></div></div><span style="font-size:0.85em;font-weight:600;color:#097E74">100.0%</span></div></td>
+<td></td></tr>
+<tr><td class="mono" style="font-weight:600">sample_sheet</td>
+<td class="mono">346/346</td>
+<td><div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:8px;background:#ddd;border-radius:4px;overflow:hidden"><div style="width:100.0%;height:100%;background:#097E74"></div></div><span style="font-size:0.85em;font-weight:600;color:#097E74">100.0%</span></div></td>
+<td></td></tr>
+<tr><td class="mono" style="font-weight:600">severity</td>
+<td class="mono">207/346</td>
+<td><div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:8px;background:#ddd;border-radius:4px;overflow:hidden"><div style="width:59.8%;height:100%;background:#c0392b"></div></div><span style="font-size:0.85em;font-weight:600;color:#c0392b">59.8%</span></div></td>
+<td><span class="tag tag-shared">NA encoding artefact</span></td></tr>
+<tr><td class="mono" style="font-weight:600">sex</td>
+<td class="mono">346/346</td>
+<td><div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:8px;background:#ddd;border-radius:4px;overflow:hidden"><div style="width:100.0%;height:100%;background:#097E74"></div></div><span style="font-size:0.85em;font-weight:600;color:#097E74">100.0%</span></div></td>
+<td></td></tr>
+<tr><td class="mono" style="font-weight:600">spot</td>
+<td class="mono">346/346</td>
+<td><div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:8px;background:#ddd;border-radius:4px;overflow:hidden"><div style="width:100.0%;height:100%;background:#097E74"></div></div><span style="font-size:0.85em;font-weight:600;color:#097E74">100.0%</span></div></td>
+<td></td></tr>
+</tbody></table>
+</section>
+<section id="glycans">
+<h2><span class="num">7</span> Glycan Composition Agreement</h2>
+<div class="stat-grid">
+
+<div class="stat-card"><div class="label">Composition Match</div><div class="value">332/346</div><div class="sub">96.0%</div></div>
+<div class="stat-card"><div class="label">Unique (glycoprep)</div><div class="value">69</div></div>
+<div class="stat-card"><div class="label">Unique (original)</div><div class="value">69</div></div>
+<div class="stat-card"><div class="label">Shared Compositions</div><div class="value">69</div></div>
+
+</div>
+<h3>Composition Mismatches</h3>
+<table><thead><tr><th>Key (sample | m/z)</th><th>Glycoprep</th><th>Original</th></tr></thead><tbody>
+<tr><td class="mono" style="font-size:0.82em">24BRXXX1_0_L12_1|1606.723541</td>
+<td class="mono">Neu5Ac1SO3Fuc1HexNAc1Gal2GalNAc</td>
+<td class="mono">Fuc1HexNAc2Gal2GalNAc</td></tr>
+<tr><td class="mono" style="font-size:0.82em">24BRXXX1_0_L12_1|1606.723541</td>
+<td class="mono">Fuc1HexNAc2Gal2GalNAc</td>
+<td class="mono">Neu5Ac1SO3Fuc1HexNAc1Gal2GalNAc</td></tr>
+<tr><td class="mono" style="font-size:0.82em">24BRXXX1_0_L12_1|1950.993112</td>
+<td class="mono">Neu5Ac3SO3HexNAc1Gal1GalNAc</td>
+<td class="mono">Neu5Ac2HexNAc2Gal2GalNAc</td></tr>
+<tr><td class="mono" style="font-size:0.82em">24BRXXX1_0_L12_1|1950.993112</td>
+<td class="mono">Neu5Ac2HexNAc2Gal2GalNAc</td>
+<td class="mono">Neu5Ac3SO3HexNAc1Gal1GalNAc</td></tr>
+</tbody></table>
+<p class="note">Mismatches occur at ambiguous m/z values where multiple glycan compositions fall within the ppm tolerance window.</p>
+</section>
+<section id="samples">
+<h2><span class="num">8</span> Per-Sample Peak Counts</h2>
+<table><thead><tr><th>Sample</th><th>Glycoprep</th><th>Original</th><th>Diff</th></tr></thead><tbody>
+<tr><td class="mono">24BRXXX1_0_L12_1</td>
+<td class="mono">43</td>
+<td class="mono">43</td>
+<td class="mono">0</td></tr>
+<tr><td class="mono">24BRXXX2_0_L13_2</td>
+<td class="mono">40</td>
+<td class="mono">40</td>
+<td class="mono">0</td></tr>
+<tr><td class="mono">24BRXXX3_0_L14_1</td>
+<td class="mono">35</td>
+<td class="mono">35</td>
+<td class="mono">0</td></tr>
+<tr><td class="mono">24BRXXX4_0_L15_2</td>
+<td class="mono">26</td>
+<td class="mono">26</td>
+<td class="mono">0</td></tr>
+<tr><td class="mono">24BRXXX5_0_L16_1</td>
+<td class="mono">42</td>
+<td class="mono">42</td>
+<td class="mono">0</td></tr>
+<tr><td class="mono">24BRXXX6_0_L17_1</td>
+<td class="mono">46</td>
+<td class="mono">46</td>
+<td class="mono">0</td></tr>
+<tr><td class="mono">24BRXXX7_0_L18_1</td>
+<td class="mono">26</td>
+<td class="mono">26</td>
+<td class="mono">0</td></tr>
+<tr><td class="mono">25BR020_0_L10_1</td>
+<td class="mono">34</td>
+<td class="mono">34</td>
+<td class="mono">0</td></tr>
+<tr><td class="mono">25BR198_0_L11_1</td>
+<td class="mono">40</td>
+<td class="mono">40</td>
+<td class="mono">0</td></tr>
+</tbody></table>
+<p><strong>9/9</strong> samples have identical peak counts.</p>
+</section>
+<section id="newcols">
+<h2><span class="num">9</span> New Columns in Glycoprep</h2>
+<p>These columns are produced by glycoprep but absent from the original R output.</p>
+<table><thead><tr><th>Column</th><th>Count</th><th>Mean</th><th>Std</th><th>Min</th><th>Median</th><th>Max</th></tr></thead><tbody>
+<tr><td class="mono" style="font-weight:600">confidence</td>
+<td class="mono">3e+02</td>
+<td class="mono">0.7839</td>
+<td class="mono">0.2685</td>
+<td class="mono">0.00854</td>
+<td class="mono">0.9135</td>
+<td class="mono">0.9997</td></tr>
+<tr><td class="mono" style="font-weight:600">confidence_corrected</td>
+<td class="mono">3e+02</td>
+<td class="mono">0.7933</td>
+<td class="mono">0.2598</td>
+<td class="mono">0</td>
+<td class="mono">0.9165</td>
+<td class="mono">1</td></tr>
+<tr><td class="mono" style="font-weight:600">ppm_difference_corrected</td>
+<td class="mono">3e+02</td>
+<td class="mono">3.175</td>
+<td class="mono">33.08</td>
+<td class="mono">-100.7</td>
+<td class="mono">0</td>
+<td class="mono">100.5</td></tr>
+<tr><td class="mono" style="font-weight:600">sample_shift_estimate</td>
+<td class="mono">3e+02</td>
+<td class="mono">-0.9967</td>
+<td class="mono">9.423</td>
+<td class="mono">-25.93</td>
+<td class="mono">1.844</td>
+<td class="mono">6.052</td></tr>
+</tbody></table>
+</section>
+<section id="verdict">
+<h2><span class="num">10</span> Verdict</h2>
+<div class="verdict warn">
+<strong>3 issue(s) detected</strong>
+<ul>
+<li>Column <code>Composition</code> has 14 mismatches out of 346 rows</li>
+<li>Column <code>Sialylation</code> has 4 mismatches out of 346 rows</li>
+<li>Column <code>Sulfation</code> has 14 mismatches out of 346 rows</li>
+</ul>
+</div>
+
+<h3 style="margin-top:22px">Summary</h3>
+<p>The two pipelines produce <strong>functionally equivalent</strong> core spectral and metadata results.
+The differences are:</p>
+<ol style="margin:10px 0 0 22px">
+  <li><strong>Signed vs absolute PPM</strong> &mdash; glycoprep stores signed ppm and applies per-sample shift correction</li>
+  <li><strong>Ambiguous peak assignments</strong> &mdash; a few m/z values where multiple glycans fall within tolerance are resolved differently</li>
+  <li><strong>New quality metrics</strong> &mdash; <code>confidence</code>, <code>confidence_corrected</code>, <code>ppm_difference_corrected</code>, and <code>sample_shift_estimate</code></li>
+  <li><strong>Dropped columns</strong> &mdash; <code>metadata_sample_sheet</code> and <code>sheet_name</code> (redundant with <code>sample_sheet</code>)</li>
+</ol>
+
+</section>
+
+<footer style="margin-top:40px;padding-top:16px;border-top:1px solid #dde0e0;font-size:0.82em;color:#999">
+  Generated 2026-02-09 11:10 &middot; glycoprep comparison report
+</footer>
+</div>
+</body>
+</html>

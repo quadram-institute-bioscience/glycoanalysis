@@ -1,0 +1,219 @@
+
+======================================================================
+  1. SCHEMA COMPARISON
+======================================================================
+
+--- Shared columns ---
+  Count: 25
+    - Composition
+    - Fucosylation
+    - Mass
+    - Sialylation
+    - Sulfation
+    - age_group
+    - area
+    - bk_peak
+    - chi_2
+    - condition
+    - fwhm
+    - intens
+    - m_z
+    - observed_mz
+    - patient
+    - ppm_difference
+    - quality_fac
+    - rel_intens
+    - res
+    - sample_sheet
+    - severity
+    - sex
+    - sn
+    - spot
+    - time
+
+--- Only in glycoprep (new) ---
+    + confidence
+    + confidence_corrected
+    + ppm_difference_corrected
+    + sample_shift_estimate
+
+--- Only in original R output ---
+    + metadata_sample_sheet
+    + sheet_name
+
+======================================================================
+  2. DIMENSIONS
+======================================================================
+  glycoprep rows :    332    cols: 29
+  original  rows :    332    cols: 27
+
+======================================================================
+  3. ROW-LEVEL ALIGNMENT (key: sample_sheet + m_z)
+======================================================================
+  Matched rows       : 325
+  Only in glycoprep  : 0
+  Only in original   : 0
+
+======================================================================
+  4. NUMERIC COLUMN COMPARISON (matched rows)
+======================================================================
+  Numeric columns compared: 14
+
+  Column                     Mean Abs Diff   Max Abs Diff  Mean % Diff   Max % Diff     Corr
+  ------------------------------------------------------------------------------------------
+  Mass                          0.00523179         0.1293      0.0003%      0.0080% 1.000000
+  area                         1.34675e-12    5.09317e-11      0.0000%      0.0000% 1.000000
+  bk_peak                                0              0         nan%         nan%      nan
+  chi_2                         2.9585e-10    2.98023e-08      0.0000%      0.0000% 1.000000
+  fwhm                         1.75027e-16    6.10623e-16      0.0000%      0.0000% 1.000000
+  intens                       5.24274e-12    4.36557e-10      0.0000%      0.0000% 1.000000
+  m_z                          2.03223e-12    5.45697e-12      0.0000%      0.0000% 1.000000
+  observed_mz                  2.03223e-12    5.45697e-12      0.0000%      0.0000% 1.000000
+  ppm_difference                   21.4974        198.292    121.4648%   3466.6366% 0.045510
+  quality_fac                  6.32577e-12    1.60071e-10      0.0000%      0.0000% 1.000000
+  rel_intens                   8.23367e-17      4.996e-16      0.0000%      0.0000% 1.000000
+  res                          1.65615e-11    5.63887e-11      0.0000%      0.0000% 1.000000
+  sn                           2.27923e-14    3.97904e-13      0.0000%      0.0000% 1.000000
+  time                         2.54764e-11    5.82077e-11      0.0000%      0.0000% 1.000000
+
+======================================================================
+  5. PPM DIFFERENCE — sign convention
+======================================================================
+
+--- Sign distribution in glycoprep ---
+  Positive: 184
+  Negative: 162
+  Zero    : 0
+
+--- Sign distribution in original ---
+  Positive: 346
+  Negative: 0
+  Zero    : 0
+
+--- Are |glycoprep ppm| ≈ |original ppm|? ---
+  False
+  Mean |abs_new - abs_orig|: 2.65989
+  Max  |abs_new - abs_orig|: 80.4683
+
+======================================================================
+  6. CATEGORICAL / TEXT COLUMN COMPARISON
+======================================================================
+  Composition                match: 332/346  (96.0%)
+      key=24BRXXX1_0_L12_1|1606.723541              new='Neu5Ac1SO3Fuc1HexNAc1Gal2GalNAc'  orig='Fuc1HexNAc2Gal2GalNAc'
+      key=24BRXXX1_0_L12_1|1606.723541              new='Fuc1HexNAc2Gal2GalNAc'  orig='Neu5Ac1SO3Fuc1HexNAc1Gal2GalNAc'
+      key=24BRXXX1_0_L12_1|1950.993112              new='Neu5Ac3SO3HexNAc1Gal1GalNAc'  orig='Neu5Ac2HexNAc2Gal2GalNAc'
+  Fucosylation               match: 346/346  (100.0%)
+  Sialylation                match: 342/346  (98.8%)
+      key=24BRXXX1_0_L12_1|1606.723541              new='Yes'  orig='No'
+      key=24BRXXX1_0_L12_1|1606.723541              new='No'  orig='Yes'
+      key=24BRXXX3_0_L14_1|1606.687455              new='Yes'  orig='No'
+  Sulfation                  match: 332/346  (96.0%)
+      key=24BRXXX1_0_L12_1|1606.723541              new='Yes'  orig='No'
+      key=24BRXXX1_0_L12_1|1606.723541              new='No'  orig='Yes'
+      key=24BRXXX1_0_L12_1|1950.993112              new='Yes'  orig='No'
+  age_group                  match: 346/346  (100.0%)
+  condition                  match: 346/346  (100.0%)
+  patient                    match: 346/346  (100.0%)
+  sample_sheet               match: 346/346  (100.0%)
+  severity                   match: 207/346  (59.8%)
+      key=24BRXXX1_0_L12_1|534.285506               new='nan'  orig='nan'
+      key=24BRXXX1_0_L12_1|575.315586               new='nan'  orig='nan'
+      key=24BRXXX1_0_L12_1|691.358306               new='nan'  orig='nan'
+  sex                        match: 346/346  (100.0%)
+  spot                       match: 346/346  (100.0%)
+
+======================================================================
+  7. NEW COLUMNS IN GLYCOPREP — summary statistics
+======================================================================
+
+--- confidence ---
+  count   : 332
+  mean    : 0.783854
+  std     : 0.268472
+  min     : 0.00854044
+  25%     : 0.729245
+  50%     : 0.913457
+  75%     : 0.965608
+  max     : 0.999714
+
+--- confidence_corrected ---
+  count   : 332
+  mean    : 0.793294
+  std     : 0.25981
+  min     : 0
+  25%     : 0.751499
+  50%     : 0.916549
+  75%     : 0.963357
+  max     : 1
+
+--- ppm_difference_corrected ---
+  count   : 332
+  mean    : 3.17493
+  std     : 33.0786
+  min     : -100.718
+  25%     : -7.58139
+  50%     : 0
+  75%     : 9.13318
+  max     : 100.484
+
+--- sample_shift_estimate ---
+  count   : 332
+  mean    : -0.996684
+  std     : 9.4228
+  min     : -25.9326
+  25%     : 1.18432
+  50%     : 1.84375
+  75%     : 3.75719
+  max     : 6.05168
+
+======================================================================
+  8. GLYCAN COMPOSITION AGREEMENT
+======================================================================
+  Composition matches: 332/346 (96.0%)
+  Reference Mass mean abs diff: 0.00523179
+  Reference Mass max abs diff : 0.1293
+  Unique compositions in glycoprep : 69
+  Unique compositions in original  : 69
+  Shared compositions              : 69
+  Only in glycoprep                : 0
+  Only in original                 : 0
+
+======================================================================
+  9. PER-SAMPLE SUMMARY
+======================================================================
+
+--- Peaks per sample — glycoprep ---
+count     9.000000
+mean     36.888889
+std       7.201466
+min      26.000000
+25%      34.000000
+50%      40.000000
+75%      42.000000
+max      46.000000
+
+--- Peaks per sample — original ---
+count     9.000000
+mean     36.888889
+std       7.201466
+min      26.000000
+25%      34.000000
+50%      40.000000
+75%      42.000000
+max      46.000000
+
+--- Per-sample peak count difference ---
+  Samples with identical peak counts: 9/9
+
+======================================================================
+  10. OVERALL VERDICT
+======================================================================
+  ISSUES FOUND:
+    1. Column 'ppm_difference' mean % diff = 121.46%
+    2. Categorical column 'Composition' has 14 mismatches
+    3. Categorical column 'Sialylation' has 4 mismatches
+    4. Categorical column 'Sulfation' has 14 mismatches
+    5. Categorical column 'severity' has 139 mismatches
+
+  New columns added by glycoprep: ['confidence', 'confidence_corrected', 'ppm_difference_corrected', 'sample_shift_estimate']
+  Columns dropped vs original   : ['metadata_sample_sheet', 'sheet_name']
