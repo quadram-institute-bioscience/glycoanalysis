@@ -1,0 +1,10 @@
+services:
+  glycoprep-web:
+    build:
+      context: ..
+      dockerfile: web/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - /tmp/glycoprep:/tmp/glycoprep
+    restart: unless-stopped

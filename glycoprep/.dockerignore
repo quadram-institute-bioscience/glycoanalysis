@@ -1,0 +1,11 @@
+web/frontend/node_modules
+web/frontend/dist
+web/backend/__pycache__
+**/__pycache__
+**/.DS_Store
+*.pyc
+.git
+.ruff_cache
+utils/
+data/input/
+data/output/
