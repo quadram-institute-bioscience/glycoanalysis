@@ -1,0 +1,142 @@
+:root {
+    --antiflash-white: #F0F1F1;
+    --apple-green: #B6BE00;
+    --pine-green: #097E74;
+    --charcoal: #2F3D46;
+}
+
+body {
+    background-color: var(--antiflash-white);
+    color: var(--charcoal);
+    padding-top: 70px;
+    /* Space for fixed navbar */
+}
+
+/* --- Navigation --- */
+.navbar {
+    background-color: var(--pine-green);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    color: white !important;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    color: white !important;
+}
+
+.nav-link.active {
+    color: var(--apple-green) !important;
+    font-weight: bold;
+}
+
+/* --- Cards --- */
+.card {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+    background-color: white;
+    border-bottom: 2px solid var(--antiflash-white);
+    padding: 1rem 1.25rem;
+}
+
+.card-title {
+    color: var(--pine-green);
+    font-weight: bold;
+}
+
+/* --- Buttons --- */
+.btn-primary {
+    background-color: var(--pine-green);
+    border-color: var(--pine-green);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #07665e;
+    /* Darker shade of pine green */
+    border-color: #07665e;
+}
+
+.btn-success {
+    background-color: var(--apple-green);
+    border-color: var(--apple-green);
+    color: var(--charcoal);
+    /* Better contrast on bright green */
+}
+
+.btn-success:hover {
+    background-color: #a3aa00;
+    border-color: #a3aa00;
+    color: var(--charcoal);
+}
+
+/* --- Form Elements --- */
+.form-label {
+    color: var(--charcoal);
+}
+
+/* --- Logs --- */
+#log-container {
+    min-height: 200px;
+    background-color: white !important;
+    border: 1px solid #dee2e6;
+}
+
+.log-entry {
+    margin-bottom: 2px;
+    padding: 2px 5px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.log-info {
+    color: var(--charcoal);
+}
+
+.log-success {
+    color: var(--pine-green);
+    font-weight: bold;
+}
+
+.log-warning {
+    color: #d97706;
+}
+
+.log-error {
+    color: #dc2626;
+    font-weight: bold;
+}
+
+/* Custom Scrollbar for logs */
+#log-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+#log-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+#log-container::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+
+#log-container::-webkit-scrollbar-thumb:hover {
+    background: #bbb;
+}
+
+/* --- Status Badge --- */
+.badge.bg-secondary {
+    background-color: var(--charcoal) !important;
+}
