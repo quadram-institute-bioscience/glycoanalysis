@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,6 +14,7 @@
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
 </head>
+
 <body>
 
     <!-- Drag & Drop Overlay -->
@@ -26,10 +28,30 @@
 
     <!-- App Content (Hidden until loaded) -->
     <div id="app-container" class="d-none">
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+        <!-- Fixed Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">GlycoAnalytics</a>
-                <button class="btn btn-outline-light btn-sm" id="reset-btn">Load New File</button>
+                <a class="navbar-brand" href="#">GlycoCrab</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="../index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../glycoprep/index.html">GlycoPrep</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#">GlycoExplore</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link disabled" href="#" title="Coming Soon">GlycoCompare</a>
+                        </li>
+                    </ul>
+                    <button class="btn btn-outline-light btn-sm ms-3" id="reset-btn">Load New File</button>
+                </div>
             </div>
         </nav>
 
@@ -42,15 +64,17 @@
             <!-- Tabs -->
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="composition-tab" data-bs-toggle="tab" data-bs-target="#composition" type="button" role="tab">Composition</button>
+                    <button class="nav-link active" id="composition-tab" data-bs-toggle="tab"
+                        data-bs-target="#composition" type="button" role="tab">Composition</button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="data-tab" data-bs-toggle="tab" data-bs-target="#data" type="button" role="tab">Data Explorer</button>
+                    <button class="nav-link" id="data-tab" data-bs-toggle="tab" data-bs-target="#data" type="button"
+                        role="tab">Data Explorer</button>
                 </li>
             </ul>
 
             <div class="tab-content border-start border-end border-bottom p-3 bg-white" id="myTabContent">
-                
+
                 <!-- Composition Tab -->
                 <div class="tab-pane fade show active" id="composition" role="tabpanel">
                     <div class="row mb-3">
@@ -111,4 +135,5 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="app.js"></script>
 </body>
+
 </html>

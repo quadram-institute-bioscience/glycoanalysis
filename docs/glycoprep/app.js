@@ -224,12 +224,20 @@ btnProcess.addEventListener('click', async (e) => {
                 if (mz) {
                     const peak = {
                         sample_sheet: sheetName,
-                        observed_mz: mz,
                         m_z: mz,
+                        observed_mz: mz,
                         intens: parseFloat(getVal('intens') || 0),
                         sn: parseFloat(getVal('sn') || 0),
+                        rel_intens: parseFloat(getVal('relintens') || getVal('rel.intens') || 0),
                         area: parseFloat(getVal('area') || 0),
-                        ...row, // include raw
+                        quality_fac: parseFloat(getVal('qualityfac') || getVal('qualityfac.') || 0),
+                        res: parseFloat(getVal('res') || getVal('res.') || 0),
+                        fwhm: parseFloat(getVal('fwhm') || 0),
+                        chi_2: parseFloat(getVal('chi^2') || getVal('chi2') || 0),
+                        time: parseFloat(getVal('time') || 0),
+                        bk_peak: parseFloat(getVal('bkpeak') || getVal('bk.peak') || 0),
+
+                        ...row, // include raw for leftovers, but we'll filter output
                         ...(meta || {}) // merge metadata
                     };
                     combinedPeaks.push(peak);
@@ -249,8 +257,6 @@ btnProcess.addEventListener('click', async (e) => {
 
         combinedPeaks.forEach(peak => {
             const obs = peak.observed_mz;
-            let bestMatch = null;
-            let bestPPM = Infinity;
 
             // Find ALL matches within threshold
             const matches = [];
@@ -361,7 +367,46 @@ function downloadTSV(data, filename) {
         alert("No data to download.");
         return;
     }
-    const tsv = Papa.unparse(data, {
+
+    // Enforce Python-compatible column order
+    const orderedKeys = [
+        "sample_sheet", "m_z", "observed_mz", "intens", "sn", "rel_intens", "area",
+        "quality_fac", "res", "fwhm", "chi_2", "time", "bk_peak",
+        // Metadata placeholder (dynamic, but often Patient, Condition, Severity, Sex, Age group, Spot)
+        // We will append remaining keys sorted or just strictly what is in the object minus knowns
+    ];
+
+    const refKeys = ["Mass", "Composition", "Sialylation", "Fucosylation", "Sulfation"];
+    const computedKeys = ["ppm_difference", "ppm_difference_corrected", "sample_shift_estimate", "confidence", "confidence_corrected"];
+
+    // Function to reorder object
+    const reorder = (row) => {
+        const out = {};
+
+        // 1. Peak Cols
+        orderedKeys.forEach(k => { if (row[k] !== undefined) out[k] = row[k]; });
+
+        // 2. Metadata (everything else not in known lists)
+        const allKnown = new Set([...orderedKeys, ...refKeys, ...computedKeys, "_key_norm", "matched"]);
+        Object.keys(row).forEach(k => {
+            // Exclude raw Excel variations we mapped manually
+            if (!allKnown.has(k) && !['mz', 'obs', 'rel.intens', 'relintens', 'qualityfac', 'qualityfac.', 'res.', 'bk.peak', 'bkpeak', 'chi^2', 'chi2'].includes(k.toLowerCase())) {
+                out[k] = row[k];
+            }
+        });
+
+        // 3. Ref Cols
+        refKeys.forEach(k => { if (row[k] !== undefined) out[k] = row[k]; });
+
+        // 4. Computed Cols
+        computedKeys.forEach(k => { if (row[k] !== undefined) out[k] = row[k]; });
+
+        return out;
+    };
+
+    const orderedData = data.map(reorder);
+
+    const tsv = Papa.unparse(orderedData, {
         delimiter: "\t",
         header: true
     });
