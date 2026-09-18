@@ -59,8 +59,8 @@
                         <form id="process-form">
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Raw Peaks (.xlsx)</label>
-                                <input type="file" class="form-control" id="file-peaks" accept=".xlsx,.xls" required>
-                                <div class="form-text">One sheet per sample</div>
+                                <input type="file" class="form-control" id="file-peaks" accept=".xlsx,.xls" multiple required>
+                                <div class="form-text">One sheet per sample. Select one or more batch files (e.g. Batch 1.xlsx, Batch 2.xlsx, ...)</div>
                             </div>
 
                             <div class="mb-3">
@@ -134,7 +134,25 @@
                                 </div>
                             </div>
 
-                            <h6 class="mb-2">Calibration Summary</h6>
+                            <div id="batch-calibration-section" class="d-none">
+                                <h6 class="mb-2">Batch Calibration Summary</h6>
+                                <div class="form-text mb-1">Median of the per-sample shifts within each input file. Flags a whole batch/run that drifted, as opposed to a single sample.</div>
+                                <div class="table-responsive mb-3" style="max-height: 150px;">
+                                    <table class="table table-sm table-striped small">
+                                        <thead>
+                                            <tr>
+                                                <th>Batch (File)</th>
+                                                <th>Samples</th>
+                                                <th>Median Shift (ppm)</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="batch-calibration-table"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <h6 class="mb-2">Calibration Summary (per Sample)</h6>
                             <div class="table-responsive mb-3" style="max-height: 150px;">
                                 <table class="table table-sm table-striped small">
                                     <thead>

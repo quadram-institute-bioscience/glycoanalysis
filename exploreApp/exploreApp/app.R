@@ -13,7 +13,7 @@ ui <- page_sidebar(
   sidebar = sidebar(
     fileInput("file", "Upload Glycoprep Output (.tsv)", accept = ".tsv"),
     numericInput("confidence_threshold", "Confidence Threshold", value = 0.9, min = 0, max = 1, step = 0.05),
-    selectInput("group_by", "Group By", choices = c("condition", "severity", "sex", "age_group"), selected = "condition"),
+    selectInput("group_by", "Group By", choices = c("Condition", "Severity", "Sex", "Age_group"), selected = "Condition"),
     actionButton("reset", "Reset Filters")
   ),
   navset_card_underline(
